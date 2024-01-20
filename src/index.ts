@@ -4,7 +4,7 @@ interface Player {
     name: string;
     fideId?: string;
     rating?: number;
-    lichessUsername?: string;
+    lichess?: string;
 }
 
 interface Pairing {
@@ -41,13 +41,13 @@ async function playerList(): Promise<Player[]> {
 
         const fideId = headers.indexOf('FideID') > -1 ? $(element).find('td').eq(headers.indexOf('FideID')).text() : undefined;
         const rating = headers.indexOf('Rtg') > -1 ? parseInt($(element).find('td').eq(headers.indexOf('Rtg')).text()) : undefined;
-        const lichessUsername = headers.indexOf('Club/City') > -1 ? $(element).find('td').eq(headers.indexOf('Club/City')).text() : undefined;
+        const lichess = headers.indexOf('Club/City') > -1 ? $(element).find('td').eq(headers.indexOf('Club/City')).text() : undefined;
 
         const player: Player = {
             name: $(element).find('td').eq(headers.indexOf('Name')).text(),
             fideId,
             rating,
-            lichessUsername,
+            lichess,
         };
         players.push(player);
     });
