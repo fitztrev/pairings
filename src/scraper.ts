@@ -1,18 +1,18 @@
 import * as cheerio from 'cheerio';
 
-interface Player {
+export interface Player {
   name: string;
   fideId?: string;
   rating?: number;
   lichess?: string;
 }
 
-interface Pairing {
+export interface Pairing {
   white: string;
   black: string;
 }
 
-interface PairingResult {
+export interface PairingResult {
   white: Player;
   black: Player;
 }
@@ -22,12 +22,8 @@ async function fetchHtml(url: string): Promise<string> {
   return await response.text();
 }
 
-// const playerListUrl = 'https://chess-results.com/tnr850957.aspx?lan=1&turdet=YES';
-const playerListUrl = 'https://chess-results.com/tnr549689.aspx?lan=1&art=16&flag=30';
-const pairingsUrl = 'https://chess-results.com/tnr549689.aspx?lan=1&art=3&rd=1&flag=30';
-
-export async function getPlayers(): Promise<Player[]> {
-  const response = await fetchHtml(`${playerListUrl}&zeilen=99999`);
+export async function getPlayers(url: string): Promise<Player[]> {
+  const response = await fetchHtml(`${url}&zeilen=99999`);
   const $ = cheerio.load(response);
   const players: Player[] = [];
 
@@ -37,23 +33,23 @@ export async function getPlayers(): Promise<Player[]> {
     if (index === 0) {
       headers = $(element)
         .children()
-        .map((_index, element) => $(element).text())
+        .map((_index, element) => $(element).text().trim())
         .get();
       return;
     }
 
     const fideId = headers.includes('FideID')
-      ? $(element).find('td').eq(headers.indexOf('FideID')).text()
+      ? $(element).find('td').eq(headers.indexOf('FideID')).text().trim()
       : undefined;
     const rating = headers.includes('Rtg')
-      ? parseInt($(element).find('td').eq(headers.indexOf('Rtg')).text())
+      ? parseInt($(element).find('td').eq(headers.indexOf('Rtg')).text().trim())
       : undefined;
     const lichess = headers.includes('Club/City')
-      ? $(element).find('td').eq(headers.indexOf('Club/City')).text()
+      ? $(element).find('td').eq(headers.indexOf('Club/City')).text().trim()
       : undefined;
 
     const player: Player = {
-      name: $(element).find('td').eq(headers.indexOf('Name')).text(),
+      name: $(element).find('td').eq(headers.indexOf('Name')).text().trim(),
       fideId,
       rating,
       lichess,
@@ -64,12 +60,12 @@ export async function getPlayers(): Promise<Player[]> {
   return players;
 }
 
-export async function getPairings(): Promise<Pairing[]> {
-  const response = await fetchHtml(pairingsUrl);
+export async function getPairings(url: string): Promise<Pairing[]> {
+  const response = await fetchHtml(url);
   const $ = cheerio.load(response);
   const pairings: Pairing[] = [];
 
-  $('.CRs1 tr').each((index, element) => {
+  $('.CRs1 tr').each((_index, element) => {
     // only the pairing rows have nested tables. ignore headers, etc
     if ($(element).find('table').length === 0) {
       return;
@@ -77,8 +73,8 @@ export async function getPairings(): Promise<Pairing[]> {
 
     // white indicator = div.FarbewT
     // black indicator = div.FarbesT
-    const white = $(element).find('table').find('div.FarbewT').parentsUntil('table').last().text();
-    const black = $(element).find('table').find('div.FarbesT').parentsUntil('table').last().text();
+    const white = $(element).find('table').find('div.FarbewT').parentsUntil('table').last().text().trim();
+    const black = $(element).find('table').find('div.FarbesT').parentsUntil('table').last().text().trim();
 
     pairings.push({ white, black });
   });

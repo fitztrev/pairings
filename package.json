@@ -1,6 +1,14 @@
 {
+  "scripts": {
+    "test": "vitest run",
+    "watch": "vitest"
+  },
   "dependencies": {
     "@types/cheerio": "^0.22.35",
     "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "vitest": "^1.2.1"
   }
 }
