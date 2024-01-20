@@ -39,9 +39,9 @@ export async function getPlayers(): Promise<Player[]> {
             return;
         }
 
-        const fideId = headers.indexOf('FideID') > -1 ? $(element).find('td').eq(headers.indexOf('FideID')).text() : undefined;
-        const rating = headers.indexOf('Rtg') > -1 ? parseInt($(element).find('td').eq(headers.indexOf('Rtg')).text()) : undefined;
-        const lichess = headers.indexOf('Club/City') > -1 ? $(element).find('td').eq(headers.indexOf('Club/City')).text() : undefined;
+        const fideId = headers.includes('FideID') ? $(element).find('td').eq(headers.indexOf('FideID')).text() : undefined;
+        const rating = headers.includes('Rtg') ? parseInt($(element).find('td').eq(headers.indexOf('Rtg')).text()) : undefined;
+        const lichess = headers.includes('Club/City') ? $(element).find('td').eq(headers.indexOf('Club/City')).text() : undefined;
 
         const player: Player = {
             name: $(element).find('td').eq(headers.indexOf('Name')).text(),
