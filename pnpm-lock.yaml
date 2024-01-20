@@ -9,7 +9,7 @@ dependencies:
     specifier: ^0.22.35
     version: 0.22.35
   cheerio:
-    specifier: ^1.0.0-rc.12
+    specifier: 1.0.0-rc.12
     version: 1.0.0-rc.12
 
 devDependencies:

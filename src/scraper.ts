@@ -1,4 +1,4 @@
-import * as cheerio from 'cheerio';
+import cheerio from 'cheerio';
 
 export interface Player {
   name: string;
@@ -66,7 +66,7 @@ export async function getPairings(url: string): Promise<Pairing[]> {
   const pairings: Pairing[] = [];
 
   $('.CRs1 tr').each((_index, element) => {
-    // only the pairing rows have nested tables. ignore headers, etc
+    // ignore rows that do not have pairings
     if ($(element).find('table').length === 0) {
       return;
     }
