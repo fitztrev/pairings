@@ -1,13 +1,13 @@
 import { describe, expect, test, vi, Mock } from 'vitest';
-import { Pairing, Player, formatPairings, getPairings, getPlayers } from '../src/scraper';
+import { Pairing, Player, formatPairings, getPairings, getPlayers, setResultsPerPage } from '../src/scraper';
 import { readFileSync } from 'fs';
 
 global.fetch = vi.fn(url => {
-  if (url == 'https://example.com/players-with-club-city.html&zeilen=99999') {
+  if (url == 'https://example.com/players-with-club-city.html?zeilen=99999') {
     return Promise.resolve({
       text: () => Promise.resolve(readFileSync('tests/fixtures/players-with-club-city.html')),
     });
-  } else if (url == 'https://example.com/players-with-teams.html&zeilen=99999') {
+  } else if (url == 'https://example.com/players-with-teams.html?zeilen=99999') {
     return Promise.resolve({
       text: () => Promise.resolve(readFileSync('tests/fixtures/players-with-teams.html')),
     });
@@ -81,4 +81,17 @@ test('format pairings', () => {
     { white: players[0], black: players[1] },
     { white: players[2], black: players[3] },
   ]);
+});
+
+test('set results per page', () => {
+  expect(setResultsPerPage('https://example.com', 10)).toBe('https://example.com/?zeilen=10');
+  expect(setResultsPerPage('https://example.com/?foo=bar', 10)).toBe(
+    'https://example.com/?foo=bar&zeilen=10',
+  );
+  expect(setResultsPerPage('https://example.com/players.aspx?zeilen=10', 20)).toBe(
+    'https://example.com/players.aspx?zeilen=20',
+  );
+  expect(setResultsPerPage('https://example.com/players.aspx?zeilen=10', 99999)).toBe(
+    'https://example.com/players.aspx?zeilen=99999',
+  );
 });

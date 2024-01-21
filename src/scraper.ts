@@ -22,8 +22,15 @@ async function fetchHtml(url: string): Promise<string> {
   return await response.text();
 }
 
+export function setResultsPerPage(url: string, resultsPerPage: number = 99999): string {
+  // show all players on one page
+  const urlObject = new URL(url);
+  urlObject.searchParams.set('zeilen', resultsPerPage.toString());
+  return urlObject.toString();
+}
+
 export async function getPlayers(url: string): Promise<Player[]> {
-  const response = await fetchHtml(`${url}&zeilen=99999`);
+  const response = await fetchHtml(`${setResultsPerPage(url)}`);
   const $ = cheerio.load(response);
   const players: Player[] = [];
 
