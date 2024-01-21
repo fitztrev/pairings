@@ -30,7 +30,7 @@ export function setResultsPerPage(url: string, resultsPerPage: number = 99999): 
 }
 
 export async function getPlayers(url: string): Promise<Player[]> {
-  const response = await fetchHtml(`${setResultsPerPage(url)}`);
+  const response = await fetchHtml(setResultsPerPage(url));
   const $ = cheerio.load(response);
   const players: Player[] = [];
 
